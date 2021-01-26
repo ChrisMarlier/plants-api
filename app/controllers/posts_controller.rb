@@ -3,6 +3,7 @@ class PostsController < ApplicationController
 
 
 	def index
+		
 		render :json => {:response => 'You did it' },:status => 200
 	end
 

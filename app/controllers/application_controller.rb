@@ -5,12 +5,13 @@ class ApplicationController < ActionController::API
 		api_key = "AIzaSyAEg6tenjngzc8Py6fJ0cDaMfPAhZEV3z4"
 		url = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getAccountInfo?key=#{api_key}"
 
-		token = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjVmOTcxMmEwODczMTcyMGQ2NmZkNGEyYTU5MmU0ZGZjMmI1ZGU1OTUiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiQ2hyaXN0b3BoZXIgTWFybGllciIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS0vQU9oMTRHZ0VmdzBWYVlSa2VsYlp1UVZzaXY3QmRSOUZJSVdpaEVQcHgtSUc9czk2LWMiLCJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vcGxhbnRzYXBwLTIwM2QxIiwiYXVkIjoicGxhbnRzYXBwLTIwM2QxIiwiYXV0aF90aW1lIjoxNjEwMjI1NjM5LCJ1c2VyX2lkIjoiaWFSRlRoT0RzYmZ0STNvT2hvazAxbzRJZ21KMiIsInN1YiI6ImlhUkZUaE9Ec2JmdEkzb09ob2swMW80SWdtSjIiLCJpYXQiOjE2MTA0ODU1NDIsImV4cCI6MTYxMDQ4OTE0MiwiZW1haWwiOiJjaG91Y291MUBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJnb29nbGUuY29tIjpbIjEwNTc1MzY5MjE0NzU1NTgyNDM4NiJdLCJlbWFpbCI6WyJjaG91Y291MUBnbWFpbC5jb20iXX0sInNpZ25faW5fcHJvdmlkZXIiOiJnb29nbGUuY29tIn19.SAWwBGoKNGpKbJpozlHSWP0duVq-QfZVMpgwc46HPAo3vpwYv1ivjDrEV8UAM5d4Cf_rwo9voGBAlcjXkB1zOvY4CjDIuAi7Irhim7f_dRGMOK6xgrIyeZPM4WxDaNBhAtbtVzrvf6GKo79WMoJDARNcmg7ZPc9Oei_Wwc2iBr4LipKWR479OWsTSg0N_Zg2eRBIm7FbGpXEiwSKbzmzgGcCV-GIhubM_ET3D_SGqoqpaqabwE-GVJxK79HtBefAtlikJF4RqtNXoPocm1OM8l1m7h957OyMA6KojL5W4NC7A6lNLWLHOg7Fml1Q9TLTxp8vRawWYP6dLE7vaQu74w"
+		token = request.headers[:Authorization]
 
 		firebase_verification_call = HTTParty.post(url, headers: { 'Content-Type' => 'application/json' }, body: { 'idToken' => token }.to_json )
 		
 		if firebase_verification_call.response.code == "200"
-			@user = firebase_verification_call.parsed_response
+			@firebase_user = firebase_verification_call.parsed_response["users"][0]
+
 		else
 			render :json => {:response => 'Wrong authentification token' },:status => 401
 		end
