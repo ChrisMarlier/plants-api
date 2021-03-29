@@ -17,4 +17,12 @@ class ApplicationController < ActionController::API
 		end
 	end
 
+	def get_user
+		@user = User.where(firebaseId: @firebase_user["localId"]).first
+
+		if  @user == nil then
+			@user = User.create!(email: @firebase_user["email"], firebaseId: @firebase_user["localId"])
+		end
+	end
+
 end
