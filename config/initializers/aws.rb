@@ -7,3 +7,4 @@ Aws.config.update({
 $S3_CLIENT = Aws::S3::Client.new
 $BUCKET_NAME = 'greeneye'
 $BUCKET_URL = 'https://greeneye.s3.eu-west-3.amazonaws.com/'
+$BUCKET_FOLDER = 'prod/feed/'

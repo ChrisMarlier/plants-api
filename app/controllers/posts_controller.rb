@@ -1,22 +1,19 @@
 require 'open-uri'
 class PostsController < ApplicationController
-	before_action :firebase_verification#, except: :create
+	before_action :firebase_verification, :get_user#, except: :create
 
 	def index
-		render :json => {:response => 'You did it' },:status => 200
+		posts = Post.order('id DESC').page(index_params)
+
+		render :json => {:posts => posts.as_json, :meta => {:total_page => posts.total_pages, :current_page => posts.current_page}},:status => 200
 	end
 
 	def create
 
-		get_user
-
 		if params[:post].has_key?(:image)
-
 			name = @user.id.to_s + '-' + Time.now.to_i.to_s + '.jpg'
 
-			object_key = 'prod/feed/' + name
-
-			if object_uploaded?(object_key, params[:post][:image].path)
+			if object_uploaded?($BUCKET_FOLDER + name, params[:post][:image].path)
 
 			  	post = Post.create!(post_params.merge(user: @user).merge(image: name))
 			else
@@ -52,6 +49,10 @@ class PostsController < ApplicationController
 
 	def post_params
   		params.require(:post).permit(:body, :youtube_id, :image)
+	end
+
+	def index_params
+		params.require(:page)
 	end
 
 end
