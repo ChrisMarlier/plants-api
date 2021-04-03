@@ -23,8 +23,7 @@ class PostsController < ApplicationController
 			post = Post.create!(post_params.merge(user: @user))
 		end
 
-
-		render :json => {:post => {id: post.id, body: post.body, youtube_id: post.youtube_id, image: post.image} },:status => 200
+		render :json => {:post => post.as_json}, :status => 200
 	end
 
 	def object_uploaded?(object_key, path)
