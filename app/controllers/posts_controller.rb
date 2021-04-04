@@ -26,6 +26,24 @@ class PostsController < ApplicationController
 		render :json => {:post => post.as_json}, :status => 200
 	end
 
+	def destroy
+		post = Post.where(user: @user).find_by_id(params[:id])
+
+		if post
+			if !post.image.nil?
+				$S3_CLIENT.delete_object({
+			    bucket: $BUCKET_NAME,
+			    key: $BUCKET_FOLDER + post.image,
+			  	})
+			end
+
+			post.destroy!
+			render :status => 204
+		else
+			render :json => {:response => 'Error while deleting post' },:status => 502
+		end
+	end
+
 	def object_uploaded?(object_key, path)
 
 		image = File.open(open(path), 'rb')
