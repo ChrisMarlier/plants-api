@@ -6,7 +6,7 @@ class UsersController < ApplicationController
 	end
 
 	def update
-		@user.update(update_params)
+		@user.update!(update_params)
 
 		render :json => {:profile => {pseudo: @user.pseudo} },:status => 200
 	end
